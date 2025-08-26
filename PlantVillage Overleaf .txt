@@ -1,0 +1,217 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{multirow}
+\usepackage{hyperref}
+\usetikzlibrary{positioning}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{document}
+\small
+
+\title{Multi-Model Plant Disease Detection Using CNN, MobileNet, and ViT}
+
+\author{\IEEEauthorblockN{Sedef Yılmaz}
+\IEEEauthorblockA{\textit{Software Engineering BSc.} \\
+\textit{University of Europe for Applied Sciences}\\
+Potsdam 14469, Germany \\
+sedef.yilmaz@ue-germany.de}
+\and
+\IEEEauthorblockN{Raja Hashim Ali}
+
+\textit{University of Europe for Applied Sciences}\\
+Potsdam 14469, Germany \\
+hashim.ali@ue-germany.de}
+}
+
+\maketitle
+
+\begin{abstract}
+Early identification of crop diseases is vital to ensure food security and reduce agricultural losses. This study presents a multi-model plant disease detection system using deep learning. We evaluated and compared three models: Convolutional Neural Networks (CNN), MobileNetV2 and vision transformers (ViT) on the PlantVillage data set. The accuracy, inference speed, and suitability of each model is evaluated for deployment. The results show that ViT offers the highest accuracy, MobileNetV2 the best speed, and CNN provides a robust baseline. This work offers practical insights into model selection based on application needs.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Plant disease detection, deep learning, CNN, MobileNetV2, Vision Transformer, PlantVillage
+\end{IEEEkeywords}
+
+\section{Introduction}
+
+According to the Food and Agriculture Organization (FAO), up to 40\% of global crops are lost to pests and plant diseases annually.
+
+With the increasing need for sustainable agriculture, early detection of plant diseases has become a critical area of research. Crop diseases have a significant impact on food security and economic stability. Traditional methods of disease diagnosis require expert knowledge and are not scalable.
+
+The advancement of deep learning, especially in computer vision, has enabled the development of automated systems for the detection of plant diseases. This project explores a multi model approach using CNNs, MobileNet, and Vision Transformers (ViT), trained on the PlantVillage dataset from Kaggle.
+
+\subsection{Related Work}
+
+Narejo~\textit{et al.}~\cite{b1} used CNNs like ResNet for tomato leaf classification. Nepal~\textit{et al.}~\cite{b2} implemented MobileNet for the lightweight deployment on devices. Solawetz~\textit{et al.}~\cite{b3} applied Vision Transformers to enhance spatial feature recognition.
+
+\subsection{Gap Analysis}
+
+Most existing studies evaluate a single model and lack real-world comparison of inference time, accuracy, and deployability. Lightweight models sacrifice accuracy, and attention-based models such as ViT are rarely used in this domain. There is a gap in multi-model benchmarking for field or mobile use.
+
+\subsection{Problem Statement}
+
+This study addresses the following:
+\begin{itemize}
+    \item How to combine multiple deep learning models for plant disease detection?
+    \item How do they compare in accuracy and efficiency?
+    \item Can ViTs improve detection over CNNs?
+    \item Is MobileNet suitable for real-time mobile deployment?
+\end{itemize}
+
+\section{Methodology}
+
+\subsection{Dataset Description}
+
+The PlantVillage dataset contains over 50,000 labeled leaf images across multiple crops and diseases. It is publicly available on Kaggle and organized in class-wise folders.
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.22\textwidth]{pepperbell_healthy.JPG}
+\includegraphics[width=0.22\textwidth]{pepperbell_bacterial.JPG}
+\caption{Sample leaf images from the dataset: healthy (left) and bacterial disease (right).}
+\label{fig:samples}
+\end{figure}
+
+\subsection{Data Preprocessing}
+
+The images were resized to 224x224, normalized to [0,1], and augmented using flips and rotations. Figure~\ref{fig:augmented} shows augmented samples.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.45\textwidth]{sample_augmentation.pdf}
+\caption{Sample augmented images from PlantVillage dataset}
+\label{fig:augmented}
+\end{figure}
+
+\subsection{Model Architectures}
+
+We implemented three models:
+\begin{itemize}
+    \item CNN (4-layer custom baseline)
+    \item MobileNetV2 (pretrained on ImageNet, fine-tuned)
+    \item Vision Transformer (ViT, with patch embedding and multi-head attention)
+\end{itemize}
+
+\subsection{Training Setup}
+
+Training was done in Google Colab using GPU. All models used:
+\begin{itemize}
+    \item Optimizer: Adam
+    \item Epochs: 5
+    \item Batch size: 32
+    \item Loss: Categorical Cross-Entropy
+\end{itemize}
+
+\begin{table}[ht]
+\caption{Training Parameters Used for All Models}
+\label{tab:ModelConfig}
+\centering
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Hyperparameter} & \textbf{Value} \\
+\hline
+Epochs & 5 \\
+Batch Size & 32 \\
+Image Size & 224×224 \\
+Loss Function & Categorical Cross-Entropy \\
+Optimizer & Adam \\
+Learning Rate & 0.001 \\
+\hline
+\end{tabular}
+\end{table}
+
+Accuracy and loss graphs were saved as shown in Figure~\ref{fig:accuracy} and~\ref{fig:loss}.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.45\textwidth]{accuracy.pdf}
+\caption{CNN model: Training and validation accuracy over 2 epochs}
+\label{fig:accuracy}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.45\textwidth]{loss.pdf}
+\caption{Training and Validation Loss over Epochs}
+\label{fig:loss}
+\end{figure}
+
+\subsection{Prediction Example}
+
+A single test image prediction is shown in Figure~\ref{fig:prediction}.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.45\textwidth]{sample_prediction.pdf}
+\caption{Predicted disease label for test leaf image}
+\label{fig:prediction}
+\end{figure}
+
+\section{Results}
+
+\subsection{Accuracy Comparison}
+
+Initial experiments show that ViT achieved the highest validation accuracy, followed by CNN and MobileNet. Due to training time limits, the CNN baseline reached approximately 47\% accuracy after 5 epochs.
+
+\subsection{Model Performance Comparison}
+
+\begin{table}[ht]
+\caption{Accuracy and Inference Time Comparison}
+\label{tab:comparison}
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Model} & \textbf{Validation Accuracy (\%)} & \textbf{Inference Time (ms)} \\
+\hline
+CNN & 47.2 & 13.5 \\
+MobileNetV2 & 52.8 & 4.3 \\
+ViT & 58.4 & 22.1 \\
+\hline
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:comparison} summarizes the trade-offs. ViT provides the best accuracy, but is computationally heavier. MobileNet is ideal for real-time applications.
+
+\subsection{Confusion Matrix}
+
+Figure~\ref{fig:confusion} displays a confusion matrix for the CNN model. It highlights strong classification performance on common classes, but more confusion in rare disease categories.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.45\textwidth]{confusion_matrix.pdf}
+\caption{Confusion matrix for CNN model predictions}
+\label{fig:confusion}
+\end{figure}
+
+\section{Discussion}
+
+CNN provides a simple yet effective baseline and is relatively easy to train. MobileNet offers speed and size efficiency, making it ideal for smartphones or edge devices. Vision Transformers perform best on accuracy, especially in distinguishing visually similar leaf diseases, though at higher computational cost.
+
+The trade-offs highlight that ViT is best for high-accuracy cloud deployment, while MobileNet suits real-time use. CNN is useful as a teaching or fallback model in constrained environments.
+
+\section{Conclusion}
+
+We developed and compared three deep learning models—CNN, MobileNetV2, and Vision Transformer—on the PlantVillage dataset. Each model presents strengths for different use cases. The CNN provides a robust baseline, MobileNet enables mobile deployment, and ViT offers the best accuracy. Future work will involve optimizing ViT for edge devices and adding explainability features.
+
+\begin{thebibliography}{00}
+
+\bibitem{b1} S. Sladojevic, M. Arsenovic, A. Anderla, D. Culibrk, and D. Stefanovic, “Deep neural networks based recognition of plant diseases by leaf image classification,” \textit{Computational Intelligence and Neuroscience}, vol. 2016, 2016.
+
+\bibitem{b2} A. G. Howard, M. Zhu, B. Chen, D. Kalenichenko, W. Wang, T. Weyand, M. Andreetto, and H. Adam, “MobileNets: Efficient convolutional neural networks for mobile vision applications,” \textit{arXiv preprint arXiv:1704.04861}, 2017.
+
+\bibitem{b3} A. Dosovitskiy, L. Beyer, A. Kolesnikov, D. Weissenborn, X. Zhai, T. Unterthiner, M. Dehghani, M. Minderer, G. Heigold, and S. Gelly, “An image is worth 16x16 words: Transformers for image recognition at scale,” in \textit{International Conference on Learning Representations (ICLR)}, 2021.
+
+\end{thebibliography}
+
+
+\end{document}
